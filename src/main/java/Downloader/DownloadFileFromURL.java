@@ -2,7 +2,9 @@ package Downloader;
 
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 
 public class DownloadFileFromURL {
 
@@ -32,18 +34,16 @@ public class DownloadFileFromURL {
 	}
 
 	
-	private int getFileSize(URL url) {
-	    HttpURLConnection conn = null;
-	    try {
-	        conn = (HttpURLConnection) url.openConnection();
-	        conn.setRequestMethod("HEAD");
-	        conn.getInputStream();
-	        return conn.getContentLength();
-	    } catch (IOException e) {
-	        return -1;
-	    } finally {
-	        conn.disconnect();
-	    }
+	
+	public void getFileInfo(URL url)  { 
+		try {
+			URLConnection conn = url.openConnection(); 
+			java.sql.Date sqlDate = new java.sql.Date(conn.getLastModified());
+		    System.out.println(sqlDate); 
+		} catch (IOException e) { 
+			System.out.println("Connection failed!");
+		} 
 	}
+	
 
 }

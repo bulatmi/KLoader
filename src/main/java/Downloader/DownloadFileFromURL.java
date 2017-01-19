@@ -1,8 +1,10 @@
 package Downloader;
 
 import java.io.*;
-import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
+import java.sql.Date;
+
 
 public class DownloadFileFromURL {
 
@@ -18,32 +20,31 @@ public class DownloadFileFromURL {
 	}
 */
 	// ךאקאול פאיכ ס ןמלמשü‏ Stream
-	public static void downloadUsingStream(String urlStr, String file) throws IOException {
-		URL url = new URL(urlStr);
+	
+	public void downloadUsingStream(URL urlStr, String file) throws IOException {
+		URL url = urlStr;
 		BufferedInputStream bis = new BufferedInputStream(url.openStream());
-		FileOutputStream fis = new FileOutputStream(file);
+		FileOutputStream fos = new FileOutputStream(file);
 		byte[] buffer = new byte[1024];
 		int count = 0;
 		while ((count = bis.read(buffer, 0, 1024)) != -1) {
-			fis.write(buffer, 0, count);
+			fos.write(buffer, 0, count);
 		}
-		fis.close();
+		fos.close();
 		bis.close();
 	}
-
 	
-	private int getFileSize(URL url) {
-	    HttpURLConnection conn = null;
-	    try {
-	        conn = (HttpURLConnection) url.openConnection();
-	        conn.setRequestMethod("HEAD");
-	        conn.getInputStream();
-	        return conn.getContentLength();
-	    } catch (IOException e) {
-	        return -1;
-	    } finally {
-	        conn.disconnect();
-	    }
+	public java.sql.Date getFileInfo(URL url)  { 
+		try {
+			URLConnection conn = url.openConnection(); 
+			Date sqlDate = new Date(conn.getLastModified());
+		    //System.out.println(sqlDate);
+			return sqlDate;
+		} catch (IOException e) { 
+			System.out.println("Connection failed!");
+			return null;  
+		}
 	}
+	
 
 }

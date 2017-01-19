@@ -1,6 +1,7 @@
 package Application;
 
 import java.io.*;
+import java.net.URL;
 import java.util.Properties;
 
 import Downloader.DownloadFileFromURL;
@@ -9,7 +10,8 @@ public class Application {
 	
     //путь к нашему файлу конфигураций
     public static final String CFG_PATH = "src/main/resources/config.properties";
-    private static String url; 
+    //private static String url;
+    private static URL url; 
     private static String save_path; 
 	
 	public void init() { 
@@ -23,7 +25,7 @@ public class Application {
             fileInputStream = new FileInputStream(CFG_PATH);
             prop.load(fileInputStream);
  
-            url = prop.getProperty("url");
+            url = new URL(prop.getProperty("url"));
             save_path = prop.getProperty("save_path");
             
         } catch (IOException e) {
@@ -35,22 +37,23 @@ public class Application {
 		
 	}
 	
-	public void run() { 
+	public void run() throws Exception { 
+		
 		init();  
+		
 		DownloadFileFromURL downloader = new DownloadFileFromURL(); 
-		//downloader.downloadUsingStream(url, save_path);
+		downloader.getFileInfo(url);
+		
 		try {
-			// качаем файл с помощью Stream
 			downloader.downloadUsingStream(url, save_path);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
-		System.out.println("Complete");
 			
 	}
 	
-	public static void main(String[] args) { 
+	public static void main(String[] args) throws Exception { 
 		Application application = new Application(); 
 		application.run();
 		

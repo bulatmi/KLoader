@@ -37,23 +37,23 @@ public class Application {
 		
 	}
 	
-	public void run() throws IOException { 
+	public void run() throws Exception { 
+		
 		init();  
+		
 		DownloadFileFromURL downloader = new DownloadFileFromURL(); 
-		//downloader.downloadUsingStream(url, save_path);
-		/*try {
+		downloader.getFileInfo(url);
+		
+		try {
 			downloader.downloadUsingStream(url, save_path);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		*/
-		//URL url = new URL("http://www.gnivc.ru/html/gnivcsoft/KLADR/Base.7z"); 
-  
-		downloader.getFileInfo(url);
+		
 			
 	}
 	
-	public static void main(String[] args) throws IOException { 
+	public static void main(String[] args) throws Exception { 
 		Application application = new Application(); 
 		application.run();
 		

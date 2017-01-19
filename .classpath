@@ -27,7 +27,8 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/bulatmi/Desktop/sevenzipjbinding-9.20-2.00beta-AllWindows/sevenzipjbinding-9.20-2.00beta-AllWindows/lib/sevenzipjbinding.jar"/>
-	<classpathentry kind="lib" path="C:/Users/bulatmi/Desktop/sevenzipjbinding-9.20-2.00beta-AllWindows/sevenzipjbinding-9.20-2.00beta-AllWindows/lib/sevenzipjbinding-AllWindows.jar"/>
+	<classpathentry kind="lib" path="C:/JavaProjects/sevenzipjbinding-9.20-2.00beta-AllWindows/lib/sevenzipjbinding.jar"/>
+	<classpathentry kind="lib" path="C:/JavaProjects/sevenzipjbinding-9.20-2.00beta-AllWindows/lib/sevenzipjbinding-AllWindows.jar"/>
+	<classpathentry kind="lib" path="C:/JavaProjects/commons-io-1.3.2.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

@@ -6,16 +6,15 @@ import java.util.Properties;
 
 import Downloader.DownloadFileFromURL;
 import Un7zipper.Un7zh;
-import Un7zipper.testUn7z;
 
 public class Application {
 	
     //путь к нашему файлу конфигураций
     public static final String CFG_PATH = "src/main/resources/config.properties";
-    //private static String url;
     private static URL url; 
     private static String save_path; 
     private static String extractPath; 
+    private static File file; 
 	
 	public void init() { 
 		FileInputStream fileInputStream;
@@ -31,6 +30,7 @@ public class Application {
             url = new URL(prop.getProperty("url"));
             save_path = prop.getProperty("save_path");
             extractPath = prop.getProperty("extractPath");
+            file = new File(prop.getProperty("file_path")); 
             
             
             
@@ -49,20 +49,17 @@ public class Application {
 		
 		DownloadFileFromURL downloader = new DownloadFileFromURL(); 
 		downloader.getFileInfo(url);
-		
+		/*
 		try {
 			downloader.downloadUsingStream(url, save_path);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		
-		File f = new File("C:/KLADR/Base.7z"); 
-		testUn7z unzip = new testUn7z();  
-		//unzip.extract(f, extractPath); 
-		//int extractedFileNum = testUn7z.extract(f, extractPath);
+		*/
 		Un7zh un = new Un7zh();
-		un.onUnzip7Zip();
+		un.onUnzip7Zip(file);
+		
+		System.out.println("Completed!");
 		
 	}
 	

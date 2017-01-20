@@ -3,39 +3,32 @@ package Un7zipper;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.text.SimpleDateFormat;
 
-import javax.naming.Context;
-import javax.swing.text.View;
 
 import org.apache.commons.compress.archivers.sevenz.SevenZArchiveEntry;
 import org.apache.commons.compress.archivers.sevenz.SevenZFile;
 
 public class Un7zh {
 	
-	public void onUnzip7Zip() throws IOException {
-        SimpleDateFormat sdf = new SimpleDateFormat(" HH:mm:ss.SSS");
-        
-        File db_path = new File("C:/KLADR/Base1.dbf");
-        
-        File f = new File("C:/KLADR/Base.7z");
+	public void onUnzip7Zip(File file) throws IOException {
 
-        SevenZFile sevenZFile = new SevenZFile(f);
+        SevenZFile sevenZFile = new SevenZFile(file);
         SevenZArchiveEntry entry = sevenZFile.getNextEntry();
-        OutputStream os = new FileOutputStream(db_path);
+        //OutputStream os = new FileOutputStream(db_path);
         while (entry != null) {
-            byte[] buffer = new byte[8192];//
+        	System.out.println(entry.getName());
+        	OutputStream os = new FileOutputStream("C:/KLADR/" + entry.getName());
+            byte[] buffer = new byte[5120000];//new byte[8192];
             int count;
             while ((count = sevenZFile.read(buffer, 0, buffer.length)) > -1) {
 
-                os.write(buffer, 0, count);
+                os.write(buffer, 0, count);    
             }
+            os.close();
             entry = sevenZFile.getNextEntry();
         }
         sevenZFile.close();
-        os.close();
 
     }
 	

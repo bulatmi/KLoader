@@ -19,7 +19,7 @@ public class Un7zh {
         while (entry != null) {
         	System.out.println(entry.getName());
         	OutputStream os = new FileOutputStream("C:/KLADR/" + entry.getName());
-            byte[] buffer = new byte[5120000];//new byte[8192];
+            byte[] buffer = new byte[1024];//new byte[8192];
             int count;
             while ((count = sevenZFile.read(buffer, 0, buffer.length)) > -1) {
 

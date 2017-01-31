@@ -2,10 +2,12 @@ package Application;
 
 import java.io.*;
 import java.net.URL;
-import java.util.Properties;
 import java.sql.*;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.Date;
 
-import DB.SpLoadTable;
+import DB.StoredProcedures;
 import Downloader.DownloadFileFromURL;
 import Un7zipper.Un7zh;
 import DB.OraConnecting ;
@@ -53,58 +55,69 @@ public class Application {
             e.printStackTrace();
         }
 		
-		
-		
 	}
 	
 	public void run() throws Exception { 
 		
 		init();  
 		
-		DownloadFileFromURL downloader = new DownloadFileFromURL(); 
-		downloader.getFileInfo(url);
-/*
-		try {
-			downloader.downloadUsingStream(url, save_path);
-			System.out.println("Download completed!");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		Un7zh un = new Un7zh();
-
-		try {
-			un.onUnzip7Zip(file);
-			System.out.println("Un7z Completed!");
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-*/
-		for (int i = 0; i < oratables.length; ++i)
-		{
-			System.out.println(oratables[i]);
-		}
-
-		for (int i = 0; i < dbftables.length; ++i)
-		{
-			System.out.println(dbftables[i]);
-		}
-
+		DownloadFileFromURL downloader = new DownloadFileFromURL();
 
 		OraConnecting oc = new OraConnecting();
 		Connection con = oc.connecting(oraurl, user, password);
 
-		SpLoadTable spload = new SpLoadTable();
+		StoredProcedures sp = new StoredProcedures();
 
-		for (int i = 0; i < oratables.length; ++i){
-			spload.LoadTable2Ora(con, "KLADR", dbftables[i], oratables[i]);
+		System.out.println(downloader.getFileDate(url));
+		System.out.println(sp.getMaxKDate(con));
+
+		Long maxKDate = new Long(sp.getMaxKDate(con).getTime()); // получаем дату создания последнего залитого в базу кладр-а
+		Long kladrDate = new Long(downloader.getFileDate(url).getTime());      // получаем дату ныне лежащего на ресурсе архива с кладром
+
+		System.out.println(maxKDate);
+		System.out.println(kladrDate);
+		con.commit();
+
+		if (kladrDate > maxKDate) {  // если на ресурсе лежит файл более новый, чем уже загружен в базу, то выполняем весь процесс
+
+			try { 					// качаем архив с новым кладр
+				downloader.downloadUsingStream(url, save_path);
+				System.out.println("Download completed!");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			SimpleDateFormat oldDateFormat = new SimpleDateFormat("yyyy-mm-dd", Locale.getDefault());
+			SimpleDateFormat newDateFormat = new SimpleDateFormat("dd.mm.yyyy", Locale.UK);
+
+			Date sd = oldDateFormat.parse(downloader.getFileDate(url).toString());
+			String fd = newDateFormat.format(sd);
+			//System.out.println(fd);
+
+			sp.saveKladrDate(con, fd, "Base.7z");  // сохраняем дату создания нового кладр в Oracle
 			con.commit();
-			System.out.println(dbftables[i]+" is loaded!");
+
+			Un7zh un = new Un7zh();
+
+			try {					// распаковываем архив
+				un.onUnzip7Zip(file);
+				System.out.println("Un7z Completed!");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+
+			for (int i = 0; i < oratables.length; ++i) {   // заливаем таблицы в Oracle
+				sp.loadTable2Ora(con, "KLADR", dbftables[i], oratables[i]);
+				con.commit();
+				System.out.println(dbftables[i] + " is loaded!");
+			}
+
+			con.commit();
+			oc.close(con);
+
+			System.out.println("Complete!");
 		}
-
-		oc.close(con);
-
-		System.out.println("Complete!");
 	}
 	
 	public static void main(String[] args) throws Exception { 

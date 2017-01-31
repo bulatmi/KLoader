@@ -4,6 +4,7 @@ import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
 import java.sql.Date;
+import java.util.Map;
 
 
 public class DownloadFileFromURL {
@@ -32,19 +33,19 @@ public class DownloadFileFromURL {
 		}
 		fos.close();
 		bis.close();
+
 	}
 	
-	public java.sql.Date getFileInfo(URL url)  { 
+	public java.sql.Timestamp getFileDate(URL url)  {
 		try {
-			URLConnection conn = url.openConnection(); 
-			Date sqlDate = new Date(conn.getLastModified());
+			URLConnection conn = url.openConnection();
+			java.sql.Timestamp date = new java.sql.Timestamp(conn.getLastModified());
 		    //System.out.println(sqlDate);
-			return sqlDate;
+			return date;
 		} catch (IOException e) { 
 			System.out.println("Connection failed!");
 			return null;  
 		}
 	}
-	
 
 }
